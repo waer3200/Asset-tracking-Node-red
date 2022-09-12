@@ -1,0 +1,248 @@
+[
+    {
+        "id": "94f073f19b7cc357",
+        "type": "tab",
+        "label": "Connexion",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "12addf03ace1bd46",
+        "type": "ui_form",
+        "z": "94f073f19b7cc357",
+        "name": "Connexion_Form",
+        "label": "",
+        "group": "66f55f11b627533f",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Nom d'utilisateur",
+                "value": "N_us",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Mot de passe",
+                "value": "M_pass",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "N_us": "",
+            "M_pass": ""
+        },
+        "payload": "",
+        "submit": "Connecter",
+        "cancel": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "4e09c8264d128ff1"
+            ]
+        ]
+    },
+    {
+        "id": "b7005a9f24fa451b",
+        "type": "ui_button",
+        "z": "94f073f19b7cc357",
+        "name": "",
+        "group": "66f55f11b627533f",
+        "order": 3,
+        "width": "6",
+        "height": "1",
+        "passthru": false,
+        "label": "Inscrire",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"group\":{\"hide\":[\"Home_Connexion\"],\"show\":[]}}",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 520,
+        "y": 120,
+        "wires": [
+            [
+                "29a473d4588a4f67"
+            ]
+        ]
+    },
+    {
+        "id": "4e09c8264d128ff1",
+        "type": "postgrestor",
+        "z": "94f073f19b7cc357",
+        "name": "Connexion",
+        "query": "SELECT \"nom_utilisateur\", \"mot_de_passe\" FROM public.\"Utilisateur\"\nWHERE \"Nom_utilisateur\" = '{{msg.payload.N_us}}' AND \"Mot_de_passe\" = '{{msg.payload.M_pass}}' \n;\n\n",
+        "postgresDB": "dffb6cb1.2761b",
+        "output": true,
+        "outputs": 1,
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "3b0bde9cc069ad6f"
+            ]
+        ]
+    },
+    {
+        "id": "3b0bde9cc069ad6f",
+        "type": "function",
+        "z": "94f073f19b7cc357",
+        "name": "Verification de données ",
+        "func": "if (msg.payload.rowCount === 1 ) msg.payload = 1;\nelse msg.payload = 0; \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "6fa1a1fb3f107901"
+            ]
+        ]
+    },
+    {
+        "id": "6fa1a1fb3f107901",
+        "type": "switch",
+        "z": "94f073f19b7cc357",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 370,
+        "y": 140,
+        "wires": [
+            [
+                "4e01788218aae252"
+            ],
+            [
+                "155eb8895cecea10"
+            ]
+        ]
+    },
+    {
+        "id": "155eb8895cecea10",
+        "type": "function",
+        "z": "94f073f19b7cc357",
+        "name": "Le message de dialogue",
+        "func": "msg.payload = \"Le nom d'utilisateur ou le mot de passe est incorrecte\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 180,
+        "wires": [
+            [
+                "aa479357fc69c414"
+            ]
+        ]
+    },
+    {
+        "id": "aa479357fc69c414",
+        "type": "ui_toast",
+        "z": "94f073f19b7cc357",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "topic": "",
+        "name": "",
+        "x": 770,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4e01788218aae252",
+        "type": "function",
+        "z": "94f073f19b7cc357",
+        "name": "Transmission",
+        "func": "msg.payload={ \n    group: {\n        hide: [\"Home_Connexion\",\"Home_Inscription\"],\n        show: [\n             \"Home_Livraison\",\"Home_temperature\",\"Home_Vibration\"\n        ] \n    } \n    \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 80,
+        "wires": [
+            [
+                "29a473d4588a4f67"
+            ]
+        ]
+    },
+    {
+        "id": "29a473d4588a4f67",
+        "type": "ui_ui_control",
+        "z": "94f073f19b7cc357",
+        "name": "",
+        "x": 780,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "66f55f11b627533f",
+        "type": "ui_group",
+        "name": "Connexion",
+        "tab": "23bebfc5fbd76b6f",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "dffb6cb1.2761b",
+        "type": "postgresDB",
+        "name": "@localhost/AssetDB",
+        "host": "127.0.0.1",
+        "port": "5432",
+        "database": "AssetDB",
+        "ssl": "false",
+        "max": "10",
+        "min": "1",
+        "idle": "1000"
+    },
+    {
+        "id": "23bebfc5fbd76b6f",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

@@ -1,0 +1,497 @@
+[
+    {
+        "id": "9c15d21d.34fbe",
+        "type": "tab",
+        "label": "Inscription",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "5d7828f.43bc7d8",
+        "type": "ui_form",
+        "z": "9c15d21d.34fbe",
+        "name": "Inscription_Form",
+        "label": "",
+        "group": "df8a383c0d6c20f4",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Nom",
+                "value": "nom",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Prenom",
+                "value": "prenom",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Date de Naissance",
+                "value": "Date_n",
+                "type": "date",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Poste",
+                "value": "poste",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Nom d'utilisateur",
+                "value": "nom_ut",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Numéro de téléphone",
+                "value": "Num_tel",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "E-mail",
+                "value": "email",
+                "type": "email",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Mot de passe",
+                "value": "mdps",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "nom": "",
+            "prenom": "",
+            "Date_n": "",
+            "poste": "",
+            "nom_ut": "",
+            "Num_tel": "",
+            "email": "",
+            "mdps": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "e747aa79.af0748",
+                "6fff615c.e49dc",
+                "ad715f2.72022a"
+            ]
+        ]
+    },
+    {
+        "id": "5c05cb1a.232344",
+        "type": "ui_ui_control",
+        "z": "9c15d21d.34fbe",
+        "name": "",
+        "events": "all",
+        "x": 860,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "853d2668.3d60e8",
+        "type": "e-mail",
+        "z": "9c15d21d.34fbe",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": false,
+        "name": "",
+        "dname": "Mail de confirmation",
+        "x": 500,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e747aa79.af0748",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "Envoie de l'email",
+        "func": "var c = Math.random().toString(36).substring(2);\nvar a = global.set('a',c);\nmsg.to = msg.payload.email;\nmsg.topic=\"Confirmation\";\nmsg.payload = \"Bonjour,\\nVous venez de créer un compte sur l'application Asset tracking pour terminer votre inscription, vous devez activer li lien ci-dessous:\\n ..... \\n ou bien utiliser le code de confirmation suivant :\"+c+\"\\nBien cordialement,\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "853d2668.3d60e8"
+            ]
+        ]
+    },
+    {
+        "id": "ad715f2.72022a",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "Transmission1",
+        "func": "msg.payload={ \n    group: {\n        hide: [ \"Home_Inscription\"\n        ],\n        show: [\n            \"Home_Confirmation\"\n        ] \n    } \n    \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 100,
+        "wires": [
+            [
+                "5c05cb1a.232344"
+            ]
+        ]
+    },
+    {
+        "id": "945462bb.6b1e7",
+        "type": "ui_form",
+        "z": "9c15d21d.34fbe",
+        "name": "Confimation",
+        "label": "",
+        "group": "66419b4364482d6a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Code de confirmation",
+                "value": "cd",
+                "type": "text",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "cd": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "x": 90,
+        "y": 440,
+        "wires": [
+            [
+                "4e464749.578268"
+            ]
+        ]
+    },
+    {
+        "id": "4e464749.578268",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "Verification du code",
+        "func": "var a = global.get('a');\nif (msg.payload.cd === a){\nmsg.payload={ \n    group: {\n        hide: [\"Asset_Tracking_Confirmation_de_l'inscription\"],\n        show: [\n            \"Asset_Tracking_Connexion\"\n        ] \n    } \n};\n}\nelse msg.payload = 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 440,
+        "wires": [
+            [
+                "235afc49.8272a4"
+            ]
+        ]
+    },
+    {
+        "id": "235afc49.8272a4",
+        "type": "switch",
+        "z": "9c15d21d.34fbe",
+        "name": "",
+        "property": "payload",
+        "propertyType": "jsonata",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 510,
+        "y": 440,
+        "wires": [
+            [
+                "c9ea8240.949e5",
+                "1048c59aa111f629"
+            ],
+            [
+                "fc925489.a72088"
+            ]
+        ]
+    },
+    {
+        "id": "86262064.9d356",
+        "type": "ui_toast",
+        "z": "9c15d21d.34fbe",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "topic": "",
+        "name": "",
+        "x": 810,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fc925489.a72088",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "Message de dialogue",
+        "func": "msg.payload = \"Le code de confirmation est incorrecte\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 540,
+        "wires": [
+            [
+                "86262064.9d356"
+            ]
+        ]
+    },
+    {
+        "id": "6fff615c.e49dc",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "Stocker les données du formulaire",
+        "func": "var ut = {\n    \"nom\": msg.payload.nom,\n    \"prenom\":msg.payload.prenom,\n    \"Date_n\":msg.payload.Date_n,\n    \"poste\":msg.payload.poste,\n    \"nom_ut\":msg.payload.nom_ut,\n    \"Num_tel\":msg.payload.Num_tel,\n    \"email\":msg.payload.email,\n    \"mdps\":msg.payload.mdps\n};\nvar utilisateur = global.set('utilisateur',ut);\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c9ea8240.949e5",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "Passer les données a la BDD",
+        "func": "msg.payload = global.get('utilisateur');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 420,
+        "wires": [
+            [
+                "3efcc9f3.c7a0c6"
+            ]
+        ]
+    },
+    {
+        "id": "3efcc9f3.c7a0c6",
+        "type": "postgrestor",
+        "z": "9c15d21d.34fbe",
+        "name": "Insecription",
+        "query": "INSERT INTO public.\"Utilisateur\" (\"Nom\", \"Prenom\", \"Date_de_naissance\", \"Poste\", \"Nom_utilisateur\", \"Mot_de_passe\", \"E-mail\", \"Num_tel\") \nVALUES ('{{msg.payload.nom}}',\n'{{msg.payload.prenom}}', \n'{{msg.payload.Date_n}}', \n'{{msg.payload.poste}}', \n'{{msg.payload.nom_ut}}',\n'{{msg.payload.mdps}}', \n'{{msg.payload.email}}', \n{{msg.payload.Num_tel}})\n;",
+        "postgresDB": "dffb6cb1.2761b",
+        "output": true,
+        "outputs": 1,
+        "x": 830,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "370cb19109c350e8",
+        "type": "ui_button",
+        "z": "9c15d21d.34fbe",
+        "name": "",
+        "group": "66419b4364482d6a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Annuler",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "17e160c006a03b76"
+            ]
+        ]
+    },
+    {
+        "id": "17e160c006a03b76",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "transmition",
+        "func": "msg.payload={ \n    group: {\n        hide: [\"Home_Confirmation\"],\n        show: [\"Home_Inscription\", \"Home_Connexion\"] \n    } \n    \n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 300,
+        "wires": [
+            [
+                "5c05cb1a.232344"
+            ]
+        ]
+    },
+    {
+        "id": "1048c59aa111f629",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "transmition",
+        "func": "msg.payload={ \n    group: {\n        hide: [\"Home_Confirmation\"],\n        show: [\"Home_Connexion\"] \n    } \n    \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 380,
+        "wires": [
+            [
+                "5c05cb1a.232344"
+            ]
+        ]
+    },
+    {
+        "id": "eede6446815abeae",
+        "type": "ui_button",
+        "z": "9c15d21d.34fbe",
+        "name": "",
+        "group": "df8a383c0d6c20f4",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Annuler",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 640,
+        "y": 40,
+        "wires": [
+            [
+                "7e0fd7c2675a89a5"
+            ]
+        ]
+    },
+    {
+        "id": "7e0fd7c2675a89a5",
+        "type": "function",
+        "z": "9c15d21d.34fbe",
+        "name": "transmition",
+        "func": "msg.payload={ \n    group: {\n        hide: [\"Home_Inscription\"],\n        show: [ \"Home_Connexion\"] \n    } \n    \n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 40,
+        "wires": [
+            [
+                "5c05cb1a.232344"
+            ]
+        ]
+    },
+    {
+        "id": "df8a383c0d6c20f4",
+        "type": "ui_group",
+        "name": "Inscription",
+        "tab": "23bebfc5fbd76b6f",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "66419b4364482d6a",
+        "type": "ui_group",
+        "name": "Confirmation",
+        "tab": "23bebfc5fbd76b6f",
+        "order": 6,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "dffb6cb1.2761b",
+        "type": "postgresDB",
+        "name": "@localhost/AssetDB",
+        "host": "127.0.0.1",
+        "port": "5432",
+        "database": "AssetDB",
+        "ssl": "false",
+        "max": "10",
+        "min": "1",
+        "idle": "1000"
+    },
+    {
+        "id": "23bebfc5fbd76b6f",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
